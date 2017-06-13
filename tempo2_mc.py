@@ -6,6 +6,9 @@ import astropy.units as u
 import astropy.units.astrophys as ua 
 import astropy.constants as con 
 
+#Important: set the env right for miraculix
+os.system('setenv TEMPO2 /media/part1/soft/build/tempo2-1.11/T2runtime')
+
 #Define some early parameters
 name_of_par_file = 'mc_parfile.par' #The par file shouldn't contain the parameters we're gridding over, since we'll need to write these values to the temp file eventually
 name_of_tim_file = 'try_this_first.tim'
