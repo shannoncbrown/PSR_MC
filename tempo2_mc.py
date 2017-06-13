@@ -7,8 +7,8 @@ import astropy.units.astrophys as ua
 import astropy.constants as con 
 
 #Define some early parameters
-name_of_par_file = 'something.par' #The par file shouldn't contain the parameters we're gridding over, since we'll need to write these values to the temp file eventually
-name_of_tim_file = 'something.tim'
+name_of_par_file = 'mc_parfile.par' #The par file shouldn't contain the parameters we're gridding over, since we'll need to write these values to the temp file eventually
+name_of_tim_file = 'try_this_first.tim'
 
 #Define some new units for us to use
 ls = ua.lyr * (1./31557600.00)
@@ -108,6 +108,3 @@ for p in px:
 
 
 				os.system('bash mc_bash.sh %s %d %d %d' %(name_of_tim_file, p.value, h.value, c))
-
-				quit()
-
