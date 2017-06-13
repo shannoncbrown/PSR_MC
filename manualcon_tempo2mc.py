@@ -8,7 +8,7 @@ name_of_par_file = 'mc_parfile.par' #The par file shouldn't contain the paramete
 name_of_tim_file = 'try_this_first.tim'
 
 e = 0.00079727109617760987333 #from update.par file
-c_con = 299 792 458. #m/s
+c_con = 299792458. #m/s
 pm_ra = 2.083752  #This is mult by cos_dec, mas/year
 err_pm_ra =  0.064657 #mas/year
 pm_dec = -11.041313 #mas/year
@@ -36,7 +36,7 @@ def d_func(px):
 
 def Pb_dot_func(pm_ra, pm_dec, d, Pb):
 	#Need to convert pm to rad/s and Pb to s
-	return (((pm_ra*(4.847309743e-9)/(3,154e7))**2. + (pm_dec*(4.847309743e-9)/(3,154e7) )**2.)*d/c_con) * (Pb*86400.)
+	return (((pm_ra*(4.847309743e-9)/(3.154e7))**2. + (pm_dec*(4.847309743e-9)/(3.154e7) )**2.)*d/c_con) * (Pb*86400.)
 
 def omega_dot_GR_func(M, e, Pb):
 	return 3. * ((T_sun * M)**(2./3.)/(1. - e**2.)) * (Pb/(2.*np.pi))**(-5./3.)
@@ -78,12 +78,12 @@ for p in px:
 				M = M_func(f, s, r) #calculate from m2 and i
 				omega_dot_GR = omega_dot_GR_func(M, e, Pb)
 
-				omega_dot_GR = omega_dot_GR.to((3.1709837963e-6)**(2./3.)/(0.00273973)**(5./3.)) * 206264806.2471 #First convert micros --> year, then day --> year, Last factor is to convert to mas
+				omega_dot_GR = omega_dot_GR*((3.1709837963e-6)**(2./3.)/(0.00273973)**(5./3.)) * 206264806.2471 #First convert micros --> year, then day --> year, Last factor is to convert to mas
 				
 				omega_dot_k = omega_dot_k_func(pm_tot, c, theta_mu, o)
 				
 				omega_dot = omega_dot_GR + omega_dot_k
-				omega_dot = omega_dot*(180./np.pi) #To put it in the units needed by tempo2 (degrees per year)
+				omega_dot = omega_dot/(3600000.) #To put it in the units needed by tempo2 (degrees per year)
 				
 				print omega_dot
 
