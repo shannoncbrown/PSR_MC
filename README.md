@@ -1,6 +1,8 @@
 #PSR_MC
 Required sw: astropy, numpy, tempo2
 
+NOTE: The manualcon_tempo2mc.py file does a manual conversion for the units (there may be some issues)... while tempo2_mc.py uses astropy.units to convert everything possible.
+
 For PSR J1640+2224 there are complementary python and bash programs that work together to perform a Monte Carlo simulation over 4 variables (px, h3, omega, cosi) to try to find a better timing solution that gives a smaller error on the value of the companion's mass.
 
 NOTE: Changing the number of parameters (of h3, parallax, omega, cosi) that the program will grid over requires changing both programs in superficial ways right now.
