@@ -37,7 +37,7 @@ def r_func(h3, cosi):
 	return h3 * ((1. + cosi)/(1. - cosi))**1.5
 
 def x_dot_func(pm_tot, x, cosi, theta_mu, big_omega):
-	return -x * pm_tot * (cosi/np.sin(abs(np.arccos(cosi)))) * np.sin(theta_mu - big_omega)
+	return -x * pm_tot * (cosi/np.sin(abs(np.arccos(cosi)))) * np.sin(theta_mu.to(u.rad) - big_omega.to(u.rad))
 
 def d_func(px):
 	return (1./px) * ua.kpc*u.marcsec
@@ -49,7 +49,7 @@ def omega_dot_GR_func(M, e, Pb):
 	return 3. * ((T_sun * M)**(2./3.)/(1. - e**2.)) * (Pb/(2.*np.pi))**(-5./3.)
 
 def omega_dot_k_func(pm_tot, cosi, theta_mu, big_omega):
-	return (pm_tot/np.sin(abs(np.arccos(cosi)))) * np.cos(theta_mu - big_omega)
+	return (pm_tot/np.sin(abs(np.arccos(cosi)))) * np.cos(theta_mu.to(u.rad) - big_omega.to(u.rad))
 
 def M_func(f, s, r):
 	return np.sqrt((r/T_sun)**3. * s**3./f)
@@ -108,3 +108,5 @@ for p in px:
 
 
 				os.system('bash mc_bash.sh %s %d %d %d' %(name_of_tim_file, p.value, h.value, c))
+
+				#quit()
