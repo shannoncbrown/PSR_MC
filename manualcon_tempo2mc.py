@@ -78,7 +78,7 @@ for p in px:
 				M = M_func(f, s, r) #calculate from m2 and i
 				omega_dot_GR = omega_dot_GR_func(M, e, Pb)
 
-				omega_dot_GR = omega_dot_GR*((3.1709837963e-6)**(2./3.)/(0.00273973)**(5./3.)) * 206264806.2471 #First convert micros --> year, then day --> year, Last factor is to convert to mas
+				omega_dot_GR = omega_dot_GR*((3.16887385068e-14)**(2./3.)/(0.00273973)**(5./3.)) * 206264806.2471 #First convert microsec --> year, then day --> year, Last factor is to convert to mas
 				
 				omega_dot_k = omega_dot_k_func(pm_tot, c, theta_mu, o)
 				
