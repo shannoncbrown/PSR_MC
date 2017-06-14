@@ -1,6 +1,8 @@
 #PSR_MC
 Required sw: astropy, numpy, tempo2
 
+Update (14/06/2017): Ran code overnight, all the chi_squareds its outputting are way too large (500-1000).  However, after some troubleshooting it seems like the problem is either (1) in the values we are gridding over (I am especially unsure of appropriate values for px and h3) OR in the fact that tempo2 is fitting only for the parameters we calculate in the proram (PBDOT, XDOT, OMDOT, M2, SINI), since it seems to be reading the updated .par files perfectly fine.
+
 NOTE: The manualcon_tempo2mc.py file does a manual conversion for the units (there may be some issues)... while tempo2_mc.py uses astropy.units to convert everything possible.
 
 For PSR J1640+2224 there are complementary python and bash programs that work together to perform a Monte Carlo simulation over 4 variables (px, h3, omega, cosi) to try to find a better timing solution that gives a smaller error on the value of the companion's mass.
