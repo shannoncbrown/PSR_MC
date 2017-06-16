@@ -3,7 +3,7 @@
 import os
 import numpy as np 
 
-#Important: set the env right for miraculix
+#Important: set the env right for miraculix, so that the observatory codes don't cause an error
 os.system('setenv TEMPO2 /media/part1/soft/build/tempo2-1.11/T2runtime')
 
 #Define some early parameters
@@ -11,7 +11,7 @@ name_of_par_file = 'mc_parfile.par' #The par file shouldn't contain the paramete
 name_of_tim_file = 'try_this_first.tim'
 
 e = 0.00079727109617760987333 #from update.par file
-c_con = 299792458. #m/s
+c_con = 299792458.0 #m/s
 pm_ra = 2.083752  #This is mult by cos_dec, mas/year
 err_pm_ra =  0.064657 #mas/year
 pm_dec = -11.041313 #mas/year
@@ -25,14 +25,15 @@ T_sun = 4.925490947  #In microseconds
 f = 0.0059074304 #Mass function, solar masses
 
 #Define functions to convert between parameters
+#Sometimes we need to use cosi, and sometimes we need to use the absolute value of cosi
 def s_func(cosi):
-	return np.sqrt(-cosi**2. + 1.)
+	return np.sqrt(-abs(cosi)**2. + 1.)
 
 def r_func(h3, cosi):
-	return h3 * ((1. + cosi)/(1. - cosi))**1.5
+	return h3 * ((1. + abs(cosi))/(1. - abs(cosi)))**1.5
 
 def x_dot_func(pm_tot, x, cosi, theta_mu, big_omega):
-	return -x * pm_tot * (cosi/np.sin(abs(np.arccos(cosi)))) * np.sin(theta_mu - big_omega)
+	return -x * pm_tot * (cosi/np.sin((np.arccos(cosi)))) * np.sin(theta_mu - big_omega)
 
 def d_func(px):
 	return (1./px)* 3.086e19 #Convert from kpc to m3,086e+19
@@ -45,16 +46,16 @@ def omega_dot_GR_func(M, e, Pb):
 	return 3. * ((T_sun * M)**(2./3.)/(1. - e**2.)) * (Pb/(2.*np.pi))**(-5./3.)
 
 def omega_dot_k_func(pm_tot, cosi, theta_mu, big_omega):
-	return (pm_tot/np.sin(abs(np.arccos(cosi)))) * np.cos(theta_mu - big_omega)
+	return (pm_tot/np.sin((np.arccos(cosi)))) * np.cos(theta_mu - big_omega)
 
 def M_func(f, s, r):
 	return np.sqrt((r/T_sun)**3. * s**3./f)
 
 #Create a grid/cube of the parameters we want to do a MC for
 
-px = np.arange(0.702548 - 0.060684,0.702548 +0.060684, 0.001) #mas #Taking the range of parallaxes within the error reported by VLBI measurements
+px = np.arange(0.702548 - 0.060684,0.702548 + 0.060684, 0.001) #mas #Taking the range of parallaxes within the error reported by VLBI measurements
 h3 = np.arange(0.01, 10., 0.01) #Not sure what appropriate values would be for this
-cosi = np.arange(0.01, 1, 0.01) #Dimensionless
+cosi = np.arange(-1., 1., 0.01) #Dimensionless
 big_omega = np.arange(0., 180., 5) #degrees #Not sure what appropriate values for this are either, or if we'll just keep it constant
 
 #Start a series of for loops
@@ -108,6 +109,6 @@ for p in px:
 				#chis = os.system('tempo2 -f temp.par %s | grep "TITLE OF CHI SQUARED IN TEMPO2 OUTPUT"' % name_of_tim_file) #I don't think we need the awk command, grep should be able to grab the value?
 
 
-				os.system('bash mc_bash.sh %s %d %d %d' %(name_of_tim_file, p, h, c))
+				os.system('bash mc_bash.sh %s %sz %s %s %s' %(name_of_tim_file, p, h, c, o))
 
 				quit()

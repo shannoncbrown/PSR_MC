@@ -34,13 +34,13 @@ f = 0.0059074304 * ua.solMass #Mass function
 
 #Define functions to convert between parameters
 def s_func(cosi):
-	return np.sqrt(-cosi**2. + 1.)
+	return np.sqrt(-abs(cosi)**2. + 1.)
 
 def r_func(h3, cosi):
-	return h3 * ((1. + cosi)/(1. - cosi))**1.5
+	return h3 * ((1. + abs(cosi))/(1. - abs(cosi)))**1.5
 
 def x_dot_func(pm_tot, x, cosi, theta_mu, big_omega):
-	return -x * pm_tot * (cosi/np.sin(abs(np.arccos(cosi)))) * np.sin(theta_mu.to(u.rad) - big_omega.to(u.rad))
+	return -x * pm_tot * (cosi/np.sin((np.arccos(cosi)))) * np.sin(theta_mu.to(u.rad) - big_omega.to(u.rad))
 
 def d_func(px):
 	return (1./px) * ua.kpc*u.marcsec
@@ -52,7 +52,7 @@ def omega_dot_GR_func(M, e, Pb):
 	return 3. * ((T_sun * M)**(2./3.)/(1. - e**2.)) * (Pb/(2.*np.pi))**(-5./3.)
 
 def omega_dot_k_func(pm_tot, cosi, theta_mu, big_omega):
-	return (pm_tot/np.sin(abs(np.arccos(cosi)))) * np.cos(theta_mu.to(u.rad) - big_omega.to(u.rad))
+	return (pm_tot/np.sin((np.arccos(cosi)))) * np.cos(theta_mu.to(u.rad) - big_omega.to(u.rad))
 
 def M_func(f, s, r):
 	return np.sqrt((r/T_sun)**3. * s**3./f)
@@ -61,7 +61,7 @@ def M_func(f, s, r):
 
 px = np.arange(0.702548 - 0.060684,0.702548 +0.060684, 0.001) * u.marcsec #Taking the range of parallaxes within the error reported by VLBI measurements
 h3 = np.arange(0.01, 10., 0.01) *r_units #Not sure what appropriate values would be for this
-cosi = np.arange(0.01, 1, 0.01) #Dimensionless
+cosi = np.arange(-0.99, 1., 0.01) #Dimensionless
 big_omega = np.arange(0., 180., 5) *u.deg #Not sure what appropriate values for this are either, or if we'll just keep it constant
 
 #Start a series of for loops
@@ -89,8 +89,6 @@ for p in px:
 				
 				omega_dot = omega_dot_GR + omega_dot_k
 				omega_dot = omega_dot.to(u.deg/u.yr) #To put it in the units needed by tempo2
-				
-				print omega_dot
 
 				#Create a new parameter file with the MC parameters in it
 				os.system('cp %s temp.par' %name_of_par_file)
@@ -99,9 +97,11 @@ for p in px:
 				os.system('echo "SINI		" %s "1" >> temp.par' %s)
 				os.system('echo "M2		" %s "1" >> temp.par' %(r/T_sun.value))
 				os.system('echo "PX		" %s "1" >> temp.par' %p.value)
-				os.system('echo "XDOT		" %s "1" >> temp.par' %(x_dot.value*31557600.00)) #Need to convert back to lt-s/s
+				os.system('echo "XDOT		" %s "1" >> temp.par' %(x_dot.to(ls*u.rad/u.s).value))#*31557600.00)) #Need to convert back to lt-s/s
 				os.system('echo "PBDOT		" %s "1" >> temp.par' %Pb_dot.value)
 				os.system('echo "OMDOT		" %s "1" >> temp.par' %omega_dot.value)
+
+				print "s =", s, "M2 = ", r/T_sun, "PX = ",  p, "XDOT = (lt-s/s)", x_dot.to(ls*u.rad/u.s).value, "PBDOT =", Pb_dot, "OMDOT = ", omega_dot
 
 				#Run tempo2 with this new par file, record the chi_squared
 				#To grab a value from tempo2 James used the bash command $(/home/jmckee/tempo2runtime/bin/tempo2 -f temp.par $tim_file | grep "$fit_parameter" | awk '{print $5 " " $6}') 
@@ -110,6 +110,6 @@ for p in px:
 				#chis = os.system('tempo2 -f temp.par %s | grep "TITLE OF CHI SQUARED IN TEMPO2 OUTPUT"' % name_of_tim_file) #I don't think we need the awk command, grep should be able to grab the value?
 
 
-				os.system('bash mc_bash.sh %s %d %d %d' %(name_of_tim_file, p.value, h.value, c))
+				os.system('bash mc_bash.sh %s %s %s %s %s' %(name_of_tim_file, p.value, h.value, c, o.value))
 
-				#quit()
+				quit()
