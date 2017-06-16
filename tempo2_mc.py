@@ -6,12 +6,9 @@ import astropy.units as u
 import astropy.units.astrophys as ua 
 import astropy.constants as con 
 
-<<<<<<< HEAD
-=======
 #Important: set the env right for miraculix
 os.system('setenv TEMPO2 /media/part1/soft/build/tempo2-1.11/T2runtime')
 
->>>>>>> c9ecace2fd5371e1c006ede50286111f0a36ee10
 #Define some early parameters
 name_of_par_file = 'mc_parfile.par' #The par file shouldn't contain the parameters we're gridding over, since we'll need to write these values to the temp file eventually
 name_of_tim_file = 'try_this_first.tim'
@@ -37,7 +34,6 @@ f = 0.0059074304 * ua.solMass #Mass function
 
 #Define functions to convert between parameters
 def s_func(cosi):
-<<<<<<< HEAD
 	return np.sqrt(-abs(cosi)**2. + 1.)
 
 def r_func(h3, cosi):
